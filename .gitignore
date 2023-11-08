@@ -1,0 +1,15 @@
+/.env
+venv
+.idea
+__pycahce__/
+db.sqlite3
+Database/__pycache__/__init__.cpython-39.pyc
+Database/__pycache__/sql_commands.cpython-39.pyc
+Database/__pycache__/sql_queries.cpython-39.pyc
+Handlers/__pycache__/__init__.cpython-39.pyc
+Handlers/__pycache__/call_back.cpython-39.pyc
+Handlers/__pycache__/start.cpython-39.pyc
+Keyboards/__pycache__/__init__.cpython-39.pyc
+Keyboards/__pycache__/inline_buttons.cpython-39.pyc
+__pycache__/config.cpython-39.pyc
+
