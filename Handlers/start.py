@@ -15,7 +15,7 @@ async def start_button(message: types.Message):
     )
     await bot.send_message(
         chat_id=message.from_user.id,
-        text="Hi. I am Thor and I check if there are any curse words in chat. "
+        text="Hi. I am Heimdallr and I check if there are any curse words in chat. "
              "Don't curse or you go in Valhalla.",
         reply_markup=await start_keyboard()
     )

@@ -15,6 +15,7 @@ class Database:
         self.connection.execute(sql_queries.CREATE_USER_TABLE_QUERY)
         self.connection.execute(sql_queries.CREATE_CALLBACK_QUERY)
         self.connection.execute(sql_queries.CREATE_BAN_USER_TABLE_QUERY)
+        self.connection.execute(sql_queries.CREATE_USER_DATA_TABLE_QUERY)
         self.connection.commit()
 
     def insert_sql_users(self, telegram_id, username, firstname, lastname):
@@ -24,7 +25,7 @@ class Database:
         )
         self.connection.commit()
 
-    def sql_insert_ban_user(self, telegram_id):
+    def insert_sql_ban_user(self, telegram_id):
         self.cursor.execute(
             sql_queries.INSERT_BAN_USER_QUERY,
             (None, telegram_id, 1)
@@ -37,7 +38,7 @@ class Database:
         )
         self.connection.commit()
 
-    def sql_select_ban_user(self, telegram_id):
+    def select_sql_ban_user(self, telegram_id):
         self.cursor.row_factory = lambda cursor, row: {
             "id": row[0],
             "telegram_id": row[1],
@@ -48,9 +49,15 @@ class Database:
             (telegram_id,)
         ).fetchone()
 
-    def sql_update_ban_user_count(self, telegram_id):
+    def update_sql_ban_user_count(self, telegram_id):
         self.cursor.execute(
             sql_queries.UPDATE_BAN_USER_COUNT_QUERY,
             (telegram_id,)
         )
+        self.connection.commit()
+
+    def insert_sql_user_data_registration(self, telegram_id, nickname, age, gender, location, photo):
+        self.cursor.execute(sql_queries.INSERT_USER_DATA_QUERY,
+                            (None, telegram_id, nickname, age, gender, location, photo,)
+                            )
         self.connection.commit()

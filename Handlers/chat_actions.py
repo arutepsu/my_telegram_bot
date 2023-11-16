@@ -16,7 +16,7 @@ async def chat_messages(message: types.Message):
                 chat_id=message.chat.id,
                 message_id=message.message_id
             )
-            user = db.sql_select_ban_user(
+            user = db.select_sql_ban_user(
                 telegram_id=message.from_user.id
             )
             await bot.send_message(
@@ -36,7 +36,7 @@ async def chat_messages(message: types.Message):
                 await bot.send_message(
                     chat_id=message.chat.id,
                     text=f"{message.from_user.first_name} soon you will go to Valhalla!")
-                db.sql_insert_ban_user(
+                db.insert_sql_ban_user(
                     telegram_id=message.from_user.id
                 )
             elif count >= 3:
@@ -49,7 +49,7 @@ async def chat_messages(message: types.Message):
                     text=f"{message.from_user.first_name} went to Valhalla"
                 )
             elif user:
-                db.sql_update_ban_user_count(
+                db.update_sql_ban_user_count(
                     telegram_id=message.from_user.id
 
                 )
