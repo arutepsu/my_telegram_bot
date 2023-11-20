@@ -16,6 +16,7 @@ class Database:
         self.connection.execute(sql_queries.CREATE_CALLBACK_QUERY)
         self.connection.execute(sql_queries.CREATE_BAN_USER_TABLE_QUERY)
         self.connection.execute(sql_queries.CREATE_USER_DATA_TABLE_QUERY)
+        self.connection.execute(sql_queries.CREATE_LIKE_TABLE_QUERY)
         self.connection.commit()
 
     def insert_sql_users(self, telegram_id, username, firstname, lastname):
@@ -56,8 +57,61 @@ class Database:
         )
         self.connection.commit()
 
-    def insert_sql_user_data_registration(self, telegram_id, nickname, age, gender, location, photo):
+    def insert_sql_user_data_registration(self, telegram_id, nickname, age, gender, location, bio, photo):
         self.cursor.execute(sql_queries.INSERT_USER_DATA_QUERY,
-                            (None, telegram_id, nickname, age, gender, location, photo,)
+                            (None, telegram_id, nickname, age, gender, location, bio, photo,)
                             )
         self.connection.commit()
+
+    def insert_sql_like(self, owner, liker):
+        self.cursor.execute(
+            sql_queries.INSERT_LIKE_FORM_QUERY,
+            (None, owner, liker)
+        )
+        self.connection.commit()
+
+    def sql_select_one_user_data(self, tg_id):
+        self.cursor.row_factory = lambda cursor, row: {
+            "id": row[0],
+            "telegram_id": row[1],
+            "nickname": row[2],
+            "age": row[3],
+            "gender": row[4],
+            "location": row[5],
+            "bio": row[6],
+            "photo": row[7],
+        }
+        return self.cursor.execute(
+            sql_queries.SELECT_ONE_USER_DATA, (tg_id,)
+        ).fetchone()
+
+    def select_all_user_data(self, tg_id):
+        self.cursor.row_factory = lambda cursor, row: {
+            "id": row[0],
+            "telegram_id": row[1],
+            "nickname": row[2],
+            "age": row[3],
+            "gender": row[4],
+            "location": row[5],
+            "bio": row[6],
+            "photo": row[7],
+        }
+        return self.cursor.execute(
+            sql_queries.SELECT_ALL_USER_DATA,
+            (tg_id,)
+        ).fetchall()
+
+    def filter_data(self, tg_id):
+        self.cursor.row_factory = lambda cursor, row: {
+            "id": row[0],
+            "telegram_id": row[1],
+            "nickname": row[2],
+            "age": row[3],
+            "gender": row[4],
+            "location": row[5],
+            "bio": row[6],
+            "photo": row[7],
+        }
+        return self.cursor.execute(
+            sql_queries.FILTER_DATA_LIKE, (tg_id, tg_id,)
+        ).fetchall()

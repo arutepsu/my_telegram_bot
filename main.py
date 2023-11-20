@@ -4,7 +4,8 @@ from Handlers import (
     start,
     call_back,
     chat_actions,
-    registration
+    registration,
+    profiles
 )
 from Database import sql_commands
 
@@ -18,6 +19,7 @@ start.register_start_handlers(dp=dp)
 call_back.register_callback_handlers(dp=dp)
 chat_actions.register_chat_actions_handlers(dp=dp)
 registration.register_registration_handlers(dp=dp)
+profiles.register_profile_handlers(dp=dp)
 if __name__ == "__main__":
     executor.start_polling(
         dp,
