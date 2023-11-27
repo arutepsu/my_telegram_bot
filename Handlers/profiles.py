@@ -94,4 +94,3 @@ def register_profile_handlers(dp: Dispatcher):
         like_detect_call,
         lambda call: "liked_profile_" in call.data
     )
-

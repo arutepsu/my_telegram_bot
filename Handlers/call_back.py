@@ -1,4 +1,6 @@
 from aiogram import types, Dispatcher
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+
 from config import bot
 from Database.sql_commands import Database
 from Keyboards.inline_buttons import survey_keyboard

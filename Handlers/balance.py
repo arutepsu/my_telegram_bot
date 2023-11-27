@@ -23,3 +23,4 @@ async def balance_call(call: types.CallbackQuery):
 def register_balance_handlers(dp: Dispatcher):
     dp.register_callback_query_handler(balance_call,
                                        lambda call: call.data == "balance_call")
+

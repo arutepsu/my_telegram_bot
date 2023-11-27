@@ -190,3 +190,17 @@ class Database:
         )
         return self.cursor.fetchall()
 
+    def sql_select_all_tg_users(self):
+        return self.cursor.execute(
+            sql_queries.SELECT_ALL_TG_USERS,
+        ).fetchall()
+
+    def select_potential_ban_users(self):
+        return self.cursor.execute(
+            sql_queries.SELECT_POTENTIAL_BAN_USERS,
+        ).fetchall()
+
+    def select_count_ban_user(self, tg_id):
+        return self.cursor.execute(
+            sql_queries.SELECT_COUNT_BAN_QUERY, (tg_id,)
+        ).fetchone()
