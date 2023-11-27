@@ -89,7 +89,6 @@ class Database:
             "location": row[5],
             "bio": row[6],
             "photo": row[7],
-            "reference_link": row[8],
         }
         return self.cursor.execute(
             sql_queries.SELECT_ONE_USER_DATA, (tg_id,)
@@ -105,7 +104,6 @@ class Database:
             "location": row[5],
             "bio": row[6],
             "photo": row[7],
-            "reference_link": row[8],
         }
         return self.cursor.execute(
             sql_queries.SELECT_ALL_USER_DATA,
@@ -122,7 +120,6 @@ class Database:
             "location": row[5],
             "bio": row[6],
             "photo": row[7],
-            "reference_link": row[8],
         }
         return self.cursor.execute(
             sql_queries.FILTER_DATA_LIKE, (tg_id, tg_id,)

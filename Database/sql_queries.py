@@ -15,11 +15,6 @@ ALTER TABLE telegram_users
 ADD COLUMN REFERENCE_LINK TEXT
 """
 
-# ALTER_USER_TABLE_B = """
-# ALTER TABLE telegram_users
-# ADD COLUMN BALANCE INTEGER
-# """
-
 INSERT_USER_QUERY = """
 INSERT OR IGNORE INTO telegram_users VALUES (?,?,?,?,?,?)"""
 
