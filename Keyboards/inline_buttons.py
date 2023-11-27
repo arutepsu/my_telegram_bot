@@ -117,6 +117,17 @@ async def ban_keyboard(link, user_id):
     return markup
 
 
+async def repeat_survey():
+    markup = InlineKeyboardMarkup()
+
+    repeat_button = InlineKeyboardButton(
+        "Repeat the Survey",
+        callback_data="repeat_survey"
+    )
+    markup.add(repeat_button)
+    return markup
+
+
 async def my_profile_keyboard():
     markup = InlineKeyboardMarkup()
     like_button = InlineKeyboardButton(

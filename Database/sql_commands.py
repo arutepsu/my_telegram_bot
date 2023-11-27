@@ -204,3 +204,14 @@ class Database:
         return self.cursor.execute(
             sql_queries.SELECT_COUNT_BAN_QUERY, (tg_id,)
         ).fetchone()
+
+    def check_callback(self, tg_id):
+        return self.cursor.execute(
+            sql_queries.CHECK_CALLBACK_QUERY, (tg_id,)
+        ).fetchone()[0]
+
+    def delete_data(self, tg_id):
+        return self.cursor.execute(
+            sql_queries.DELETE_DATA_CALLBACK_QUERY, (tg_id,)
+        )
+        self.connection.commit()
