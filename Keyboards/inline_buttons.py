@@ -19,10 +19,25 @@ async def start_keyboard():
         "View profiles",
         callback_data="random_profiles"
     )
+    reference_button = InlineKeyboardButton(
+        "Reference Link",
+        callback_data="reference_link"
+    )
+    referral_list_button = InlineKeyboardButton(
+        "Referral list",
+        callback_data="reference_list"
+    )
+    balance_button = InlineKeyboardButton(
+        "Balance",
+        callback_data="balance_call"
+    )
     markup.add(start_button)
     markup.add(registration_button)
     markup.add(my_profile_button)
     markup.add(random_profiles_button)
+    markup.add(reference_button)
+    markup.add(referral_list_button)
+    markup.add(balance_button)
     return markup
 
 
@@ -59,6 +74,8 @@ async def like_dislike_keyboard(owner_tg_id):
     markup.add(like_button)
     markup.add(dislike_button)
     return markup
+
+
 async def my_profile_keyboard():
     markup = InlineKeyboardMarkup()
     like_button = InlineKeyboardButton(
@@ -72,4 +89,3 @@ async def my_profile_keyboard():
     markup.add(like_button)
     markup.add(dislike_button)
     return markup
-

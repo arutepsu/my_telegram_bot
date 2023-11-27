@@ -17,12 +17,20 @@ class Database:
         self.connection.execute(sql_queries.CREATE_BAN_USER_TABLE_QUERY)
         self.connection.execute(sql_queries.CREATE_USER_DATA_TABLE_QUERY)
         self.connection.execute(sql_queries.CREATE_LIKE_TABLE_QUERY)
+        self.connection.execute(sql_queries.CREATE_REFERRAL_TABLE_QUERY)
+        self.connection.execute(sql_queries.CREATE_BALANCE_QUERY)
+        try:
+            self.connection.execute(sql_queries.ALTER_USER_TABLE_RL)
+            # self.connection.execute(sql_queries.ALTER_USER_TABLE_B)
+        except sqlite3.OperationalError:
+            pass
+
         self.connection.commit()
 
     def insert_sql_users(self, telegram_id, username, firstname, lastname):
         self.cursor.execute(
             sql_queries.INSERT_USER_QUERY,
-            (None, telegram_id, username, firstname, lastname)
+            (None, telegram_id, username, firstname, lastname, None)
         )
         self.connection.commit()
 
@@ -57,9 +65,10 @@ class Database:
         )
         self.connection.commit()
 
-    def insert_sql_user_data_registration(self, telegram_id, nickname, age, gender, location, bio, photo):
+    def insert_sql_user_data_registration \
+                    (self, telegram_id, nickname, age, gender, location, bio, photo):
         self.cursor.execute(sql_queries.INSERT_USER_DATA_QUERY,
-                            (None, telegram_id, nickname, age, gender, location, bio, photo,)
+                            (None, telegram_id, nickname, age, gender, location, bio, photo)
                             )
         self.connection.commit()
 
@@ -80,6 +89,7 @@ class Database:
             "location": row[5],
             "bio": row[6],
             "photo": row[7],
+            "reference_link": row[8],
         }
         return self.cursor.execute(
             sql_queries.SELECT_ONE_USER_DATA, (tg_id,)
@@ -95,6 +105,7 @@ class Database:
             "location": row[5],
             "bio": row[6],
             "photo": row[7],
+            "reference_link": row[8],
         }
         return self.cursor.execute(
             sql_queries.SELECT_ALL_USER_DATA,
@@ -111,7 +122,74 @@ class Database:
             "location": row[5],
             "bio": row[6],
             "photo": row[7],
+            "reference_link": row[8],
         }
         return self.cursor.execute(
             sql_queries.FILTER_DATA_LIKE, (tg_id, tg_id,)
         ).fetchall()
+
+    def sql_select_balance_referral(self, tg_id):
+        self.cursor.row_factory = lambda cursor, row: {
+            "balance": row[0],
+        }
+        return self.cursor.execute(
+            sql_queries.SELECT_BALANCE_REFERRAL_QUERY,
+            (tg_id,)
+        ).fetchone()
+
+    def sql_update_reference_link(self, link, owner):
+        self.cursor.execute(
+            sql_queries.UPDATE_REFERENCE_LINK_QUERY,
+            (link, owner,)
+        )
+        self.connection.commit()
+
+    def sql_select_user_link(self, tg_id):
+        self.cursor.row_factory = lambda cursor, row: {
+            "link": row[0],
+        }
+        return self.cursor.execute(
+            sql_queries.SELECT_USER_LINK_QUERY, (tg_id,)
+        ).fetchone()
+
+    def sql_select_user_by_link(self, link):
+        self.cursor.row_factory = lambda cursor, row: {
+            "tg_id": row[0],
+        }
+        return self.cursor.execute(
+            sql_queries.SELECT_USER_BY_LINK_QUERY,
+            (link,)
+        ).fetchone()
+
+    def sql_update_balance(self, tg_id):
+        print(tg_id)
+        self.cursor.execute(
+            sql_queries.UPDATE_USER_BALANCE_QUERY,
+            (tg_id,)
+        )
+        self.connection.commit()
+
+    def sql_insert_referral(self, owner, referral):
+        self.cursor.execute(
+            sql_queries.INSERT_REFERRAL_QUERY, (None, owner, referral,)
+        )
+        self.connection.commit()
+
+    def sql_insert_balance_query(self, owner, amount):
+        self.cursor.execute(
+            sql_queries.INSERT_BALANCE_QUERY, (None, owner, amount)
+        )
+        self.connection.commit()
+
+    def sql_select_balance_user(self, tg_id):
+        self.cursor.execute(
+            sql_queries.SELECT_BAN_USER_QUERY, (tg_id,)
+        )
+        self.connection.commit()
+
+    def sql_select_referral_users(self, tg_id):
+        self.cursor.execute(
+            sql_queries.SELECT_REFERENCE_LIST, (tg_id,)
+        )
+        return self.cursor.fetchall()
+

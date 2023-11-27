@@ -4,7 +4,7 @@ import aiogram
 from aiogram import types, Dispatcher
 from config import bot
 from const import USER_DATA_TEXT
-from Database.sql_commands import Database
+from Database.sql_commands import Database, sql_queries
 from Keyboards.inline_buttons import like_dislike_keyboard, my_profile_keyboard
 import random
 import re
@@ -94,3 +94,4 @@ def register_profile_handlers(dp: Dispatcher):
         like_detect_call,
         lambda call: "liked_profile_" in call.data
     )
+
