@@ -19,9 +19,10 @@ class Database:
         self.connection.execute(sql_queries.CREATE_LIKE_TABLE_QUERY)
         self.connection.execute(sql_queries.CREATE_REFERRAL_TABLE_QUERY)
         self.connection.execute(sql_queries.CREATE_BALANCE_QUERY)
+        self.connection.execute(sql_queries.CREATE_NEWS_QUERY)
+        self.connection.execute(sql_queries.CREATE_FAVORITE_NEWS_QUERY)
         try:
             self.connection.execute(sql_queries.ALTER_USER_TABLE_RL)
-            # self.connection.execute(sql_queries.ALTER_USER_TABLE_B)
         except sqlite3.OperationalError:
             pass
 
@@ -215,3 +216,34 @@ class Database:
             sql_queries.DELETE_DATA_CALLBACK_QUERY, (tg_id,)
         )
         self.connection.commit()
+
+    def sql_insert_news_element(self, link):
+        self.cursor.execute(
+            sql_queries.INSERT_NEWS_QUERY, (None, link,)
+        )
+        self.connection.commit()
+
+    def sql_insert_favorite_news_element(self, tg_id, link):
+        self.cursor.execute(
+            sql_queries.INSERT_FAVORITE_NEWS_QUERY, (None, tg_id, link,)
+        )
+        self.connection.commit()
+
+    def select_article(self, tg_id):
+        self.cursor.execute(
+            sql_queries.SELECT_ARTICLE, (tg_id, )
+        ).fetchone()
+
+    def get_news_link_by_id(self, id):
+        try:
+            self.cursor.execute(
+                sql_queries.SELECT_ARTICLE, (id,)
+            )
+            link_data = self.cursor.fetchone()  # Fetch the link data
+            if link_data:
+                return link_data[0]  # Return the link from the fetched data
+            else:
+                return None  # Return None if link not found for the given ID
+        except Exception as e:
+            print(f"Failed to fetch link: {e}")
+            return None

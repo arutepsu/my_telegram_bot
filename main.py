@@ -8,7 +8,7 @@ from Handlers import (
     profiles,
     reference,
     balance,
-    admin
+    admin,
 )
 from Database import sql_commands
 

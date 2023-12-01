@@ -1,9 +1,10 @@
 from aiogram import types, Dispatcher
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 
-from config import bot
+from config import bot, dp
 from Database.sql_commands import Database
-from Keyboards.inline_buttons import survey_keyboard, repeat_survey
+from Keyboards.inline_buttons import survey_keyboard, repeat_survey, save_news_keyboard
+from scraping.anime_news_scraper import AnimeNewsScraper
 
 
 async def start_survey_call(call: types.CallbackQuery):
@@ -66,6 +67,59 @@ async def repeat_survey_call(call: types.CallbackQuery):
     )
 
 
+async def scraper_call(call: types.CallbackQuery):
+    scraper = AnimeNewsScraper()
+    data = scraper.parse_data()
+    for url in data[:5]:
+        await bot.send_message(
+            chat_id=call.from_user.id,
+            text=f"{scraper.PLUS_URL + url} ",
+            reply_markup=await save_news_keyboard()
+        )
+
+
+@dp.callback_query_handler(lambda call: call.data.startswith('save_article'))
+async def save_news_callback_handler(call: CallbackQuery):
+    if call.data.startswith('save_article'):
+        print(f"Received callback data: {call.data}")
+        parts = call.data.split('_')
+        if len(parts) >= 2:
+            article_id_str = parts[-1]
+            try:
+                article_id = int(article_id_str)
+                print(f"Extracted article ID (int): {article_id}")
+
+                db = Database()
+                link = db.get_news_link_by_id(article_id)
+
+                if link:
+                    db.sql_insert_favorite_news_element(
+                        tg_id=call.from_user.id,
+                        link=link
+                    )
+                    await bot.send_message(
+                        chat_id=call.from_user.id,
+                        text="Saved!"
+                    )
+                else:
+                    await bot.send_message(
+                        chat_id=call.from_user.id,
+                        text="Link not found!"
+                    )
+            except ValueError:
+                print("Invalid article ID format")
+                await bot.send_message(
+                    chat_id=call.from_user.id,
+                    text="Invalid article ID format!"
+                )
+        else:
+            print("Invalid data format: Missing ID part")
+            await bot.send_message(
+                chat_id=call.from_user.id,
+                text="Invalid data format!"
+            )
+
+
 def register_callback_handlers(dp: Dispatcher):
     dp.register_callback_query_handler(start_survey_call,
                                        lambda call: call.data == "start_survey")
@@ -77,3 +131,5 @@ def register_callback_handlers(dp: Dispatcher):
                                        lambda call: call.data == "choice_3")
     dp.register_callback_query_handler(repeat_survey_call,
                                        lambda call: call.data == "repeat_survey")
+    dp.register_callback_query_handler(scraper_call,
+                                       lambda call: call.data == "anime_news")

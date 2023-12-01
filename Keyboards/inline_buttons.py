@@ -31,6 +31,10 @@ async def start_keyboard():
         "Balance",
         callback_data="balance_call"
     )
+    anime_news_button = InlineKeyboardButton(
+        "View anime news",
+        callback_data="anime_news"
+    )
     markup.add(start_button)
     markup.add(registration_button)
     markup.add(my_profile_button)
@@ -38,6 +42,7 @@ async def start_keyboard():
     markup.add(reference_button)
     markup.add(referral_list_button)
     markup.add(balance_button)
+    markup.add(anime_news_button)
     return markup
 
 
@@ -140,4 +145,14 @@ async def my_profile_keyboard():
     )
     markup.add(like_button)
     markup.add(dislike_button)
+    return markup
+
+
+async def save_news_keyboard():
+    markup = InlineKeyboardMarkup()
+    save_button = InlineKeyboardButton(
+        "Save this article",
+        callback_data="save_article"
+    )
+    markup.add(save_button)
     return markup
