@@ -148,11 +148,12 @@ async def my_profile_keyboard():
     return markup
 
 
-async def save_news_keyboard():
+async def save_news_keyboard(article_id):
     markup = InlineKeyboardMarkup()
     save_button = InlineKeyboardButton(
         "Save this article",
-        callback_data="save_article"
+        callback_data=f"save_article_{article_id}"
     )
     markup.add(save_button)
     return markup
+

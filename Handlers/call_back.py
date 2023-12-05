@@ -1,10 +1,14 @@
+
+import sqlite3
+
 from aiogram import types, Dispatcher
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+from aiogram.types import CallbackQuery
 
 from config import bot, dp
 from Database.sql_commands import Database
 from Keyboards.inline_buttons import survey_keyboard, repeat_survey, save_news_keyboard
 from scraping.anime_news_scraper import AnimeNewsScraper
+from scraping.async_anime_news_scraper import AsyncNewsScraper
 
 
 async def start_survey_call(call: types.CallbackQuery):
@@ -70,54 +74,49 @@ async def repeat_survey_call(call: types.CallbackQuery):
 async def scraper_call(call: types.CallbackQuery):
     scraper = AnimeNewsScraper()
     data = scraper.parse_data()
+    db = Database()
+
     for url in data[:5]:
+        print("URL from scraper:", scraper.PLUS_URL + url)
+        id = db.get_news_id_by_link(scraper.PLUS_URL + url)
+        print("ID from database:", id)
+        # print("!!!", url)
         await bot.send_message(
             chat_id=call.from_user.id,
             text=f"{scraper.PLUS_URL + url} ",
-            reply_markup=await save_news_keyboard()
+            reply_markup=await save_news_keyboard(article_id=id)
         )
 
 
-@dp.callback_query_handler(lambda call: call.data.startswith('save_article'))
 async def save_news_callback_handler(call: CallbackQuery):
-    if call.data.startswith('save_article'):
-        print(f"Received callback data: {call.data}")
-        parts = call.data.split('_')
-        if len(parts) >= 2:
-            article_id_str = parts[-1]
+    data_parts = call.data.split('_')
+    if len(data_parts) >= 2:
+        link_id = '_'.join(data_parts[2:])
+        db = Database()
+        link = db.get_news_link_by_id(link_id)
+        print(link)
+        if link:
             try:
-                article_id = int(article_id_str)
-                print(f"Extracted article ID (int): {article_id}")
-
-                db = Database()
-                link = db.get_news_link_by_id(article_id)
-
-                if link:
-                    db.sql_insert_favorite_news_element(
-                        tg_id=call.from_user.id,
-                        link=link
-                    )
-                    await bot.send_message(
-                        chat_id=call.from_user.id,
-                        text="Saved!"
-                    )
-                else:
-                    await bot.send_message(
-                        chat_id=call.from_user.id,
-                        text="Link not found!"
-                    )
-            except ValueError:
-                print("Invalid article ID format")
+                db.sql_insert_favorite_news_element(
+                    tg_id=call.from_user.id,
+                    link=link
+                )
                 await bot.send_message(
                     chat_id=call.from_user.id,
-                    text="Invalid article ID format!"
+                    text="Article Saved!"
+                )
+            except sqlite3.IntegrityError:
+                await bot.send_message(
+                    chat_id=call.from_user.id,
+                    text="Article is already saved!"
                 )
         else:
-            print("Invalid data format: Missing ID part")
             await bot.send_message(
                 chat_id=call.from_user.id,
-                text="Invalid data format!"
+                text="Failed to retrieve the article link. Please try again later."
             )
+    else:
+        print("Invalid callback data format")
 
 
 def register_callback_handlers(dp: Dispatcher):
@@ -133,3 +132,5 @@ def register_callback_handlers(dp: Dispatcher):
                                        lambda call: call.data == "repeat_survey")
     dp.register_callback_query_handler(scraper_call,
                                        lambda call: call.data == "anime_news")
+    dp.register_callback_query_handler(save_news_callback_handler,
+                                       lambda call: call.data.startswith('save_article_'))

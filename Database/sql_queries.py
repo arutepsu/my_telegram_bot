@@ -205,6 +205,9 @@ INSERT_FAVORITE_NEWS_QUERY = """
 INSERT INTO favorite_news_query VALUES (?,?,?)
 """
 
-SELECT_ARTICLE = """
+SELECT_ARTICLE_ID = """
+SELECT ID FROM news_query WHERE LINK = ?;
+"""
+SELECT_ARTICLE_LINK = """
 SELECT LINK FROM news_query WHERE ID = ?;
 """

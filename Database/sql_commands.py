@@ -223,27 +223,41 @@ class Database:
         )
         self.connection.commit()
 
-    def sql_insert_favorite_news_element(self, tg_id, link):
+    def sql_insert_favorite_news_element(self, link, tg_id):
         self.cursor.execute(
-            sql_queries.INSERT_FAVORITE_NEWS_QUERY, (None, tg_id, link,)
+            sql_queries.INSERT_FAVORITE_NEWS_QUERY, (None, link, tg_id,)
         )
         self.connection.commit()
 
     def select_article(self, tg_id):
         self.cursor.execute(
-            sql_queries.SELECT_ARTICLE, (tg_id, )
+            sql_queries.SELECT_ARTICLE_ID, (tg_id,)
         ).fetchone()
+
+    def get_news_id_by_link(self, link):
+        try:
+            self.cursor.execute(
+                sql_queries.SELECT_ARTICLE_ID, (link,)
+            )
+            link_data = self.cursor.fetchone()
+            if link_data:
+                return link_data[0]
+            else:
+                return None
+        except Exception as e:
+            print(f"Failed to fetch link: {e}")
+            return None
 
     def get_news_link_by_id(self, id):
         try:
             self.cursor.execute(
-                sql_queries.SELECT_ARTICLE, (id,)
+                sql_queries.SELECT_ARTICLE_LINK, (id,)
             )
-            link_data = self.cursor.fetchone()  # Fetch the link data
+            link_data = self.cursor.fetchone()
             if link_data:
-                return link_data[0]  # Return the link from the fetched data
+                return link_data[0]
             else:
-                return None  # Return None if link not found for the given ID
+                return None
         except Exception as e:
             print(f"Failed to fetch link: {e}")
             return None
