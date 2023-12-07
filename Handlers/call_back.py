@@ -6,8 +6,8 @@ from aiogram.types import CallbackQuery
 from config import bot, dp
 from Database.sql_commands import Database
 from Keyboards.inline_buttons import survey_keyboard, repeat_survey, save_news_keyboard
-from scraping.anime_news_scraper import AnimeNewsScraper
-from scraping.async_anime_news_scraper import AsyncAnimeNewsScraper
+# from scraping.anime_news_scraper import AnimeNewsScraper
+# from scraping.async_anime_news_scraper import AsyncAnimeNewsScraper
 
 
 async def start_survey_call(call: types.CallbackQuery):
@@ -144,9 +144,9 @@ def register_callback_handlers(dp: Dispatcher):
                                        lambda call: call.data == "choice_3")
     dp.register_callback_query_handler(repeat_survey_call,
                                        lambda call: call.data == "repeat_survey")
-    dp.register_callback_query_handler(scraper_call,
-                                       lambda call: call.data == "anime_news")
+    # dp.register_callback_query_handler(scraper_call,
+    #                                    lambda call: call.data == "anime_news")
     dp.register_callback_query_handler(save_news_callback_handler,
                                        lambda call: call.data.startswith('save_article_'))
-    dp.register_callback_query_handler(async_scraper_call,
-                                       lambda call: call.data == "async_anime_news")
+    # dp.register_callback_query_handler(async_scraper_call,
+    #                                    lambda call: call.data == "async_anime_news")
