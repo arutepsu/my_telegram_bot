@@ -35,6 +35,15 @@ async def start_keyboard():
         "View anime news",
         callback_data="anime_news"
     )
+    async_anime_news_button = InlineKeyboardButton(
+        "View async anime news",
+        callback_data="async_anime_news"
+    )
+    survey_button = InlineKeyboardButton(
+        "Survey",
+        callback_data="survey"
+    )
+
     markup.add(start_button)
     markup.add(registration_button)
     markup.add(my_profile_button)
@@ -43,6 +52,8 @@ async def start_keyboard():
     markup.add(referral_list_button)
     markup.add(balance_button)
     markup.add(anime_news_button)
+    markup.add(async_anime_news_button)
+    markup.add(survey_button)
     return markup
 
 
@@ -93,6 +104,15 @@ async def admin_keyboard():
     )
     markup.add(print_all_users_data)
     markup.add(print_most_possibly_ban_users_button)
+    return markup
+
+async def survey_list_keyboard():
+    markup = InlineKeyboardMarkup()
+    list_surveys = InlineKeyboardButton(
+        "Yes, I want to check it!",
+        callback_data="list_surveys"
+    )
+    markup.add(list_surveys)
     return markup
 
 
@@ -156,4 +176,3 @@ async def save_news_keyboard(article_id):
     )
     markup.add(save_button)
     return markup
-

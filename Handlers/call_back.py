@@ -1,4 +1,3 @@
-
 import sqlite3
 
 from aiogram import types, Dispatcher
@@ -8,7 +7,7 @@ from config import bot, dp
 from Database.sql_commands import Database
 from Keyboards.inline_buttons import survey_keyboard, repeat_survey, save_news_keyboard
 from scraping.anime_news_scraper import AnimeNewsScraper
-from scraping.async_anime_news_scraper import AsyncNewsScraper
+from scraping.async_anime_news_scraper import AsyncAnimeNewsScraper
 
 
 async def start_survey_call(call: types.CallbackQuery):
@@ -88,6 +87,21 @@ async def scraper_call(call: types.CallbackQuery):
         )
 
 
+async def async_scraper_call(call: types.CallbackQuery):
+    scraper = AsyncAnimeNewsScraper()
+    data = await scraper.parse_pages()  # Capture the returned data
+    dat = []
+    print(data)
+    for url in data[:4]:
+        dat.append(url)
+        print(url)
+        # await bot.send_message(
+        #     chat_id=call.from_user.id,
+        #     text=f"{scraper.PLUS_URL + url}"
+        # )
+        print(dat)
+
+
 async def save_news_callback_handler(call: CallbackQuery):
     data_parts = call.data.split('_')
     if len(data_parts) >= 2:
@@ -134,3 +148,5 @@ def register_callback_handlers(dp: Dispatcher):
                                        lambda call: call.data == "anime_news")
     dp.register_callback_query_handler(save_news_callback_handler,
                                        lambda call: call.data.startswith('save_article_'))
+    dp.register_callback_query_handler(async_scraper_call,
+                                       lambda call: call.data == "async_anime_news")

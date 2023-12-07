@@ -27,3 +27,4 @@ Keyboards/media/photos/file_4.jpg
 scraping/__pycache__/__init__.cpython-39.pyc
 scraping/__pycache__/anime_news_scraper.cpython-39.pyc
 scraping/__pycache__/async_anime_news_scraper.cpython-39.pyc
+Handlers/survey_list2.py

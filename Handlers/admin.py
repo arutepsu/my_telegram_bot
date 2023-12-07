@@ -1,8 +1,7 @@
 from aiogram import types, Dispatcher
-
 from Database.sql_commands import Database
 from config import bot, ADMIN_ID, dp
-from Keyboards.inline_buttons import admin_keyboard, private_message_keyboard, ban_keyboard
+from Keyboards.inline_buttons import admin_keyboard, private_message_keyboard, ban_keyboard, survey_list_keyboard
 from const import WARNING_TEXT
 
 
@@ -16,6 +15,24 @@ async def admin_call(message: types.Message):
             text="Hello Master 🐲 \n "
                  "What would you like to do?",
             reply_markup=await admin_keyboard()
+        )
+    else:
+        await bot.send_message(
+            chat_id=message.from_user.id,
+            text="U r not my master 🤬"
+        )
+
+
+async def survey_call(message: types.Message):
+    print(ADMIN_ID)
+    print(message.from_user.id)
+    if message.from_user.id == int(ADMIN_ID):
+        await message.delete()
+        await bot.send_message(
+            chat_id=message.from_user.id,
+            text="Hello Admin!🐲 \n "
+                 "Wanna check survey list?",
+            reply_markup=await survey_list_keyboard()
         )
     else:
         await bot.send_message(
@@ -86,6 +103,8 @@ async def warning_message(call: types.CallbackQuery):
 
 
 def register_admin_handlers(dp: Dispatcher):
+    dp.register_message_handler(survey_call,
+                                lambda word: "sur" in word.text)
     dp.register_message_handler(admin_call,
                                 lambda word: "dorei" in word.text)
     dp.register_callback_query_handler(all_profiles_data,

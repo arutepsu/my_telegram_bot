@@ -9,6 +9,8 @@ from Handlers import (
     reference,
     balance,
     admin,
+    survey,
+    survey_list,
 )
 from Database import sql_commands
 
@@ -26,6 +28,8 @@ registration.register_registration_handlers(dp=dp)
 profiles.register_profile_handlers(dp=dp)
 reference.register_reference_handlers(dp=dp)
 balance.register_balance_handlers(dp=dp)
+survey.register_survey_handlers(dp=dp)
+survey_list.register_survey_list_handlers(dp=dp)
 if __name__ == "__main__":
     executor.start_polling(
         dp,

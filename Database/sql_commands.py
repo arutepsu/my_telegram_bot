@@ -21,6 +21,8 @@ class Database:
         self.connection.execute(sql_queries.CREATE_BALANCE_QUERY)
         self.connection.execute(sql_queries.CREATE_NEWS_QUERY)
         self.connection.execute(sql_queries.CREATE_FAVORITE_NEWS_QUERY)
+        self.connection.execute(sql_queries.CREATE_SCRAPED_NEWS_QUERY)
+        self.connection.execute(sql_queries.CREATE_SURVEY_QUERY)
         try:
             self.connection.execute(sql_queries.ALTER_USER_TABLE_RL)
         except sqlite3.OperationalError:
@@ -248,6 +250,19 @@ class Database:
             print(f"Failed to fetch link: {e}")
             return None
 
+    def sql_insert_scraped_news(self, link):
+        self.cursor.execute(
+            sql_queries.INSERT_SCRAPED_NEWS_QUERY,
+            (None, link)
+        )
+        self.connection.commit()
+
+    def sql_insert_survey_query(self, idea, problems, tg_id):
+        self.cursor.execute(sql_queries.INSERT_SURVEY_QUERY,
+                            (None, idea, problems, tg_id)
+                            )
+        self.connection.commit()
+
     def get_news_link_by_id(self, id):
         try:
             self.cursor.execute(
@@ -261,3 +276,19 @@ class Database:
         except Exception as e:
             print(f"Failed to fetch link: {e}")
             return None
+
+    def get_all_surveys(self):
+        self.cursor.execute(sql_queries.GET_ALL_SURVEYS)
+        return self.cursor.fetchall()
+
+    def get_survey_by_id(self, survey_id):
+        self.cursor.execute(sql_queries.GET_SURVEY_BY_ID, (survey_id,))
+        return self.cursor.fetchone()
+
+    def get_ideas(self):
+        self.cursor.execute(sql_queries.GET_IDEAS, )
+        return self.cursor.fetchall()
+
+    def get_problems(self):
+        self.cursor.execute(sql_queries.GET_PROBLEMS, )
+        return self.cursor.fetchall()
