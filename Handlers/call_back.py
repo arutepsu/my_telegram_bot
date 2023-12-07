@@ -70,36 +70,36 @@ async def repeat_survey_call(call: types.CallbackQuery):
     )
 
 
-async def scraper_call(call: types.CallbackQuery):
-    scraper = AnimeNewsScraper()
-    data = scraper.parse_data()
-    db = Database()
-
-    for url in data[:5]:
-        print("URL from scraper:", scraper.PLUS_URL + url)
-        id = db.get_news_id_by_link(scraper.PLUS_URL + url)
-        print("ID from database:", id)
-        # print("!!!", url)
-        await bot.send_message(
-            chat_id=call.from_user.id,
-            text=f"{scraper.PLUS_URL + url} ",
-            reply_markup=await save_news_keyboard(article_id=id)
-        )
-
-
-async def async_scraper_call(call: types.CallbackQuery):
-    scraper = AsyncAnimeNewsScraper()
-    data = await scraper.parse_pages()  # Capture the returned data
-    dat = []
-    print(data)
-    for url in data[:4]:
-        dat.append(url)
-        print(url)
-        # await bot.send_message(
-        #     chat_id=call.from_user.id,
-        #     text=f"{scraper.PLUS_URL + url}"
-        # )
-        print(dat)
+# async def scraper_call(call: types.CallbackQuery):
+#     scraper = AnimeNewsScraper()
+#     data = scraper.parse_data()
+#     db = Database()
+#
+#     for url in data[:5]:
+#         print("URL from scraper:", scraper.PLUS_URL + url)
+#         id = db.get_news_id_by_link(scraper.PLUS_URL + url)
+#         print("ID from database:", id)
+#         # print("!!!", url)
+#         await bot.send_message(
+#             chat_id=call.from_user.id,
+#             text=f"{scraper.PLUS_URL + url} ",
+#             reply_markup=await save_news_keyboard(article_id=id)
+#         )
+#
+#
+# async def async_scraper_call(call: types.CallbackQuery):
+#     scraper = AsyncAnimeNewsScraper()
+#     data = await scraper.parse_pages()  # Capture the returned data
+#     dat = []
+#     print(data)
+#     for url in data[:4]:
+#         dat.append(url)
+#         print(url)
+#         await bot.send_message(
+#             chat_id=call.from_user.id,
+#             text=f"{scraper.PLUS_URL + url}"
+#         )
+#         print(dat)
 
 
 async def save_news_callback_handler(call: CallbackQuery):
